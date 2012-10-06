@@ -1,10 +1,33 @@
 #+STARTUP: hidestars showall
 * polyfn
-  Open, single dispatch functions.
+  Open, single dispatch polymorphism.
+** Usage
+   Optionally, define a polyfn without any implementations (you could just
+   define the first implementation instead)
+   : (defpolyfn foo)
+
+   Define some implementations for specific types.
+   : (defpolyfn foo Long [exp] (inc exp))
+   : (defpolyfn foo String [exp] "Hello, World!")
+
+   Use it.
+   : (foo 1) => 2
+   : (foo "string") => "Hello, World!"
+   : (foo 1.0) => #<Exception java.lang.Exception: foo is not defined for java.lang.Double>
+
+   Oops, there is no implementation for Double, let's define one for java.lang.Number.
+   : (defpolyfn foo Number [exp] Number)
+   : (foo 1.0) => java.lang.Number
+
+   The rest of the implementations remain the same
+   : (foo 1) => 2
+   : (foo "string") => "Hello, World!"
+
+   Open, single dispatch polymorphism.  Enjoy!
 ** License
    : Copyright (c) Paul Stadig. All rights reserved.
    : Portions Copyright (c) Paul Stadig and Rich Hickey. All rights reserved.
-   : 
+   :
    : The use and distribution terms for this software are covered by the Eclipse
    : Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php) which can
    : be found in the file epl-v10.html at the root of this distribution. By using
