@@ -32,5 +32,7 @@
      `(do (defpolyfn ~name)
           (reset! (::cache (meta ~name)) {})
           (swap! (::dispatch (meta ~name))
-                 assoc ~type (fn ~(vec params) ~@body))
+                 assoc ~type (fn [~(with-meta (first params) {:tag type})
+                                  ~@(rest params)]
+                               ~@body))
           (var ~name))))
