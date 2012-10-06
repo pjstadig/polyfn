@@ -16,6 +16,7 @@
 
    Optionally, define a polyfn without any implementations (you could just
    define the first implementation instead)
+   : (require '[name.stadig.polyfn :refer [defpolyfn]])
    : (defpolyfn foo)
 
    Define some implementations for specific types.
