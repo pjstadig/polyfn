@@ -2,6 +2,18 @@
 * polyfn
   Open, single dispatch polymorphism.
 ** Usage
+   Leiningen dependency information:
+
+   : [name.stadig/polyfn "1.0.0"]
+
+   Maven dependency information:
+
+   : <dependency>
+   :   <groupId>name.stadig</groupId>
+   :   <artifactId>polyfn</artifactId>
+   :   <version>1.0.0</version>
+   : </dependency>
+
    Optionally, define a polyfn without any implementations (you could just
    define the first implementation instead)
    : (defpolyfn foo)
