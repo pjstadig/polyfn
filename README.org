@@ -14,12 +14,8 @@
    :   <version>1.0.0</version>
    : </dependency>
 
-   Optionally, define a polyfn without any implementations (you could just
-   define the first implementation instead)
-   : (require '[name.stadig.polyfn :refer [defpolyfn]])
-   : (defpolyfn foo)
-
    Define some implementations for specific types.
+   : (require '[name.stadig.polyfn :refer [defpolyfn]])
    : (defpolyfn foo Long [exp] (inc exp))
    : (defpolyfn foo String [exp] "Hello, World!")
 
