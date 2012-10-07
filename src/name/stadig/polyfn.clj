@@ -80,9 +80,13 @@
           (expand-method-impl-cache cache c f))
     f))
 
-(defn- add-impl [^AFunction polyfn type fn]
-  (swap! (::dispatch (meta polyfn)) assoc type fn)
-  (set! (.__methodImplCache polyfn) (MethodImplCache. nil nil)))
+(defn reset-cache [^AFunction polyfn]
+  (set! (.__methodImplCache polyfn)
+        (loop [cache (MethodImplCache. nil nil)
+               [[c f] & dispatch] (seq @(::dispatch (meta polyfn)))]
+          (if c
+            (recur (expand-method-impl-cache cache c f) dispatch)
+            cache))))
 
 (defmacro defpolyfn
   ([name type params & body]
@@ -96,7 +100,9 @@
                   (if f#
                     (f# ~@params)
                     ((-cache-polyfn-fn ~name ~target) ~@params)))))
-            (add-impl ~name ~type (fn [~(with-meta target {:tag type})
-                                       ~@args]
-                                    ~@body))
+            (swap! (::dispatch (meta ~name))
+                   assoc ~type (fn [~(with-meta target {:tag type})
+                                    ~@args]
+                                 ~@body))
+            (reset-cache ~name)
             (var ~name)))))
