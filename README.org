@@ -22,7 +22,7 @@
    Use it.
    : (foo 1) => 2
    : (foo "string") => "Hello, World!"
-   : (foo 1.0) => #<Exception java.lang.Exception: foo is not defined for java.lang.Double>
+   : (foo 1.0) => #<IllegalArgumentException java.lang.IllegalArgumentException: No implementation of polyfn: #'user/foo found for class: java.lang.Double>
 
    Oops, there is no implementation for Double, let's define one for java.lang.Number.
    : (defpolyfn foo Number [exp] Number)
