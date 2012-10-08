@@ -4,7 +4,7 @@
 ** Usage
    Leiningen dependency information:
 
-   : [name.stadig/polyfn "1.0.1"]
+   : [name.stadig/polyfn "1.0.2"]
 
    Maven dependency information:
 
