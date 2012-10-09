@@ -89,20 +89,37 @@
             cache))))
 
 (defmacro defpolyfn
-  ([name type params & body]
+  ([name params]
      (let [[target & args] params]
-       `(do (defonce ~name
-              ^{::dispatch (atom {})
-                ::var (var ~name)}
-              (fn polyfn# ~params
-                (let [cache# (.__methodImplCache ^AFunction polyfn#)
-                      f# (.fnFor cache# (clojure.lang.Util/classOf ~target))]
-                  (if f#
-                    (f# ~@params)
-                    ((-cache-polyfn-fn ~name ~target) ~@params)))))
-            (swap! (::dispatch (meta ~name))
-                   assoc ~type (fn [~(with-meta target {:tag type})
+       `(defonce ~name
+          ^{::dispatch (atom {})
+            ::var (var ~name)}
+          (fn polyfn# ~params
+            (let [cache# (.__methodImplCache ^AFunction polyfn#)
+                  f# (.fnFor cache# (clojure.lang.Util/classOf ~target))]
+              (if f#
+                (f# ~@params)
+                ((-cache-polyfn-fn ~name ~target) ~@params))))))))
+
+(defn add-impl [polyfn type f]
+  (swap! (::dispatch (meta polyfn)) assoc type f)
+  (reset-cache polyfn)
+  polyfn)
+
+(defn remove-impl [polyfn type]
+  (swap! (::dispatch (meta polyfn)) dissoc type)
+  (reset-cache polyfn)
+  polyfn)
+
+(defn reset-polyfn [polyfn]
+  (reset! (::dispatch (meta polyfn)) {})
+  (reset-cache polyfn)
+  polyfn)
+
+(defmacro extend-polyfn [name type params & body]
+  (let [[target & args] params]
+    `(do (add-impl ~name ~type (fn [~(with-meta target {:tag type})
                                     ~@args]
                                  ~@body))
-            (reset-cache ~name)
-            (var ~name)))))
+         (reset-cache ~name)
+         (var ~name))))
